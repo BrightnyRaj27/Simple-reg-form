@@ -26,14 +26,23 @@ def add_user(request):
     return render(request, 'Register.html', {'datas': datas})
 
 
+# def user_list(request):
+#     Datas=User.objects.all()
+#     if(Datas):
+#         return redirect(request,'Register.html', {'datas':Datas})
+#     else:
+#      return render (request,'Register.html')
+ 
+ 
 def user_list(request):
-    Datas=User.objects.all()
-    if(Datas):
-        return redirect(request,'Register.html', {'datas':Datas})
+    query = request.GET.get('q')
+    if query:
+        datas = User.objects.filter(Name__icontains=query)
     else:
-     return render (request,'Register.html')
- 
- 
+        datas = User.objects.all()
+    return render(request, 'user_list.html', {'datas': datas})
+
+
 def User_Update(request,user_id):
     orginal_data=User.objects.get(id=user_id)
     if request.method == 'POST':

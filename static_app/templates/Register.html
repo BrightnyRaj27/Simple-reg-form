@@ -1,85 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
     <link rel="stylesheet" href="{% static 'boostrap/css/bootstrap.min.css' %}">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-
 
 <body>
     <div class="container-fluid">
         <div class="col-md-offset-1 col-md-4">
-            <!-- <div class="col-md-offset-1 col-md-4 "> -->
-
-
-            
             <form action="" method="POST" autocomplete="off">
                 {% csrf_token %}
                 <h2 class="text-header text-center text-primary">User Registration</h2>
+
                 <div class="form-group">
                     <label>Name</label>
                     <input type="text" class="form-control" name="name">
                 </div>
+
                 <div class="form-group">
                     <label>Mobile</label>
                     <input type="number" class="form-control" name='mobile'>
                 </div>
+
                 <div class="form-group">
                     <label>Address</label>
-                    <textarea class="form-control" name='address' ></textarea>
+                    <textarea class="form-control" name='address'></textarea>
                 </div>
+
                 <div class="form-group">
                     <label>Mail</label>
                     <input class="form-control" name="mail">
                 </div>
+
                 <div class="form-group">
                     <label>Password</label>
                     <input type='password' class="form-control" name="password">
                 </div>
+
                 <div class="form-group pull-right">
-                <button class="btn btn-primary" type="submit" value="Submit">Add</button>
-                <button class="btn btn-danger" type="reset" value="Clear">Clear</button>
-            </div>
+                    <button class="btn btn-primary" type="submit" value="Submit">Add</button>
+                    <button class="btn btn-danger" type="reset" value="Clear">Clear</button>
+                </div>
             </form>
         </div>
+
         {% if datas %}
-        <!-- <div class="col-md-6"> -->
-            <div class="col-md-offset-1 col-md-4">
-
+        <div class="col-md-offset-1 col-md-4">
             <h2 class="text-header text-center text-primary">List Of Users</h2>
-            <table class="table table-bordered">
 
-                <thead>
-                    <tr>
-                        <th>S.No</th>
-                        <th>Name</th>
-                        <th>Mobile</th>
-                        <th>Address</th>
-                        <th>Mail</th>
-                        <th>Update</th>
-                        <th>Delete</th>
-                    </tr>
-                    {% for data in datas %}
+            <!-- Live Search Box -->
+            <div class="search-container" style="position: relative; display: flex; align-items: center; margin-bottom: 20px;">
+                <i class="fa fa-search" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%);"></i>
+                <input type="text" id="liveSearch" class="form-control search-box d-flex" placeholder="Type to search by name..." style="width: 200px; padding-left: 30px;">
+            </div>
+
+            <!-- No results message -->
+            <p id="noResults" style="display:none; color: red; font-weight: bold; text-align: center;">No results found.</p>
+
+            <!-- Table with dynamic visibility based on search results -->
+            <div id="userTableContainer">
+                <table class="table table-bordered" id="userTable">
+                    <thead>
+                        <tr>
+                            <th>S.No</th>
+                            <th>Name</th>
+                            <th>Mobile</th>
+                            <th>Address</th>
+                            <th>Mail</th>
+                            <th>Update</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                    <tr>
-                        <td>{{forloop.counter}}</td>
-                        <td>{{data.Name}}</td>
-                        <td>{{data.Mobile}}</td>
-                        <td>{{data.Address}}</td>
-                        <td>{{data.Mail}}</td>
-                        <td ><a class="btn btn-success" href="{% url 'User_Update' data.id %}" >Update</a></td>
-                        <td ><a class="btn btn-danger" href="{% url 'Delete_User' data.id %}">Delete</a></td>
-                    </tr>
-                </tbody>
-                    {% endfor %}
-                </thead>
-            </table>
+                        {% for data in datas %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td class="user-name">{{ data.Name }}</td>
+                                <td>{{ data.Mobile }}</td>
+                                <td>{{ data.Address }}</td>
+                                <td>{{ data.Mail }}</td>
+                                <td><a class="btn btn-success" href="{% url 'User_Update' data.id %}">Update</a></td>
+                                <td><a class="btn btn-danger" href="{% url 'Delete_User' data.id %}">Delete</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% endif %}
     </div>
-    
+
+    <script>
+        document.getElementById('liveSearch').addEventListener('keyup', function () {
+            let query = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#userTable tbody tr");
+            let tableContainer = document.getElementById("userTableContainer");
+            let found = false;
+
+            rows.forEach(row => {
+                let name = row.querySelector(".user-name").textContent.toLowerCase();
+                if (name.includes(query)) {
+                    row.style.display = '';  // Show matching row
+                    found = true;
+                } else {
+                    row.style.display = 'none';  // Hide non-matching row
+                }
+            });
+
+            // Show/hide table and "No results" message
+            if (found) {
+                tableContainer.style.display = '';  // Show table if there are results
+                document.getElementById('noResults').style.display = 'none'; // Hide "No results"
+            } else {
+                tableContainer.style.display = 'none';  // Hide table if no results
+                document.getElementById('noResults').style.display = ''; // Show "No results"
+            }
+        });
+    </script>
 </body>
+
 </html>
