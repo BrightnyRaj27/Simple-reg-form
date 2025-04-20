@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'boostrap/css/bootstrap.min.css' %}">
+
+</head>
+
+
+<body>
+    <div class="container-fluid">
+        <div class="col-md-offset-1 col-md-4">
+            <!-- <div class="col-md-offset-1 col-md-4 "> -->
+
+
+            
+            <form action="" method="POST" autocomplete="off">
+                {% csrf_token %}
+                <h2 class="text-header text-center text-primary">User Registration</h2>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" class="form-control" name="name">
+                </div>
+                <div class="form-group">
+                    <label>Mobile</label>
+                    <input type="number" class="form-control" name='mobile'>
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <textarea class="form-control" name='address' ></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Mail</label>
+                    <input class="form-control" name="mail">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type='password' class="form-control" name="password">
+                </div>
+                <div class="form-group pull-right">
+                <button class="btn btn-primary" type="submit" value="Submit">Add</button>
+                <button class="btn btn-danger" type="reset" value="Clear">Clear</button>
+            </div>
+            </form>
+        </div>
+        {% if datas %}
+        <!-- <div class="col-md-6"> -->
+            <div class="col-md-offset-1 col-md-4">
+
+            <h2 class="text-header text-center text-primary">List Of Users</h2>
+            <table class="table table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Address</th>
+                        <th>Mail</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                    </tr>
+                    {% for data in datas %}
+                    <tbody>
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{data.Name}}</td>
+                        <td>{{data.Mobile}}</td>
+                        <td>{{data.Address}}</td>
+                        <td>{{data.Mail}}</td>
+                        <td ><a class="btn btn-success" href="{% url 'User_Update' data.id %}" >Update</a></td>
+                        <td ><a class="btn btn-danger" href="{% url 'Delete_User' data.id %}">Delete</a></td>
+                    </tr>
+                </tbody>
+                    {% endfor %}
+                </thead>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+    
+</body>
+</html>
